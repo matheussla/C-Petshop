@@ -4,7 +4,7 @@
 #include <string.h>
 
 #define LIMITE 10
-#define PRECO 10
+#define PRECO 1
 
 typedef struct Client{
     char nome[15];
