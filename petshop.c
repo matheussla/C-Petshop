@@ -4,6 +4,7 @@
 #include <string.h>
 
 #define LIMITE 10
+#define PRECO 10
 
 typedef struct Client{
     char nome[15];
@@ -11,6 +12,7 @@ typedef struct Client{
     char cpf[11];
     char numero[15];
     char cep[8];
+    int registro;
 } Client;
 
 typedef struct Animal{
@@ -22,39 +24,61 @@ typedef struct Animal{
     bool vacinado;
 } Animal;
 
-Animal* createAnimal(int tamanho);
+typedef struct Service{
+    double Banho;
+    double Tosa;
+    double Vacina;
+    int registro;
+} Service;
+
+Client* createClient(int size);
+
+Animal* createAnimal(int size);
 
 void clear_buffer(void);
 
-void accessAnimal(Animal* cadastro, int tamanho);
+void accessClient(Client* register, int size);
 
-Animal* search(Animal* cadastro, int lim);
+void accessAnimal(Animal* register, int size);
+
+Animal* search(Animal* register, int lim);
 
 int main(int argc, char* argv[]){
-    Animal* animal;
     Client* client;
+    Animal* animal;
+    Service* service;
     char selection = '0';
     Animal* animalSearch;
     
+    client = createClient(LIMITE);
     animal = createAnimal(LIMITE);
-    
+    service = createService(PRECO);
+
     do {
         printf("[1] - Cadastrar Cliente\n");
         printf("[2] - Cadastrar Animal\n");
-        printf("[3] - Procurar\n");
-        printf("[4] - Encerrar Programa\n\n\n");
+        printf("[3] - Cadastrar Servico\n");
+        printf("[4] - Cadastrar Estoque\n");
+        printf("[5] - Buscar Animal\n");
+        printf("[6] - Encerrar Programa\n\n\n");
         
         printf("Sua escolha? ");
         selection = getchar();
         
         switch (selection) {
             case '1':
-                accessAnimal(record, LIMITE);
+                accessClient(client, LIMITE);
                 break;
             case '2':
                 accessAnimal(animal, LIMITE);
                 break;
             case '3':
+                accessService(service, PRECO);
+                break;
+            case '4':
+                printf("------------Estoque-------------");
+                break;        
+            case '5':
                 if ((animalSearch = search(animal, LIMITE)) != NULL) {
                     printf("Nome: %s\n", animalSearch->nome);
                     printf("Idade: %d\n", animalSearch->idade);
@@ -71,13 +95,13 @@ int main(int argc, char* argv[]){
                     printf("Animal não cadastrado.\n");
                 }
                 break;
-            case '4':
+            case '6':
                 printf("Encerrando o programa.");
                 break;
             default:
                 printf("Opção inválida.Tente novamente.\n");
         }
-    } while (selection != '4');
+    } while (selection != '6');
     
     return 0;
 }
@@ -102,6 +126,53 @@ Client* createClient(int size){
     record = (Client*)malloc(sizeof(Client) * size);
     
     return record;
+}
+
+Service* createService(int size){
+    Service* record;
+    
+    record = (Service*)malloc(sizeof(Service) * size);
+    
+    return record;
+}
+
+void accessClient(Client* record, int size){
+    int count = 0;
+    static int rg;
+    char keep;
+    
+    do {
+        system("clear");
+        
+        printf("Cadastro de Cliente\n\n");
+        
+        printf("Nome: ");
+        fgets(record[count].nome, 15, stdin);
+        
+        printf("Idade: ");
+        scanf("%d", &(record[count].idade));
+        
+        printf("Cpf: ");
+        fgets(record[count].cpf, 15, stdin);
+
+        printf("Numero: ");
+        fgets(record[count].numero, 15, stdin);
+        
+        printf("Cep: ");
+        fgets(record[count].cep, 8, stdin);
+
+        clear_buffer();
+        
+        record[count].registro = rg++;
+        
+        count++;
+    
+        printf("\n\n\nCadastrar outro cliente? ");
+        
+        keep = getchar();
+        
+    } while (count < size && (keep != 'n' && keep != 'N'));
+
 }
 
 void accessAnimal(Animal* record, int size){
@@ -140,7 +211,7 @@ void accessAnimal(Animal* record, int size){
 
 }
 
-void accessClient(Client* record, int size){
+void accessService(Service* record, int size){
     int count = 0;
     static int rg;
     char keep;
@@ -148,22 +219,16 @@ void accessClient(Client* record, int size){
     do {
         system("clear");
         
-        printf("Cadastro de Cliente\n\n");
+        printf("Cadastro Preço do Servico\n\n");
         
-        printf("Nome: ");
-        fgets(record[count].nome, 15, stdin);
+        printf("Banho: ");
+        fgets("%ld", &record[count].banho);
         
-        printf("Idade: ");
-        scanf("%d", &(record[count].idade));
+        printf("Tosa: ");
+        scanf("%ld", &(record[count].tosa));
         
-        printf("Cpf: ");
-        fgets(record[count].cpf, 15, stdin);
-
-        printf("Numero: ");
-        fgets(record[count].numero, 15, stdin);
-        
-        printf("Cep: ");
-        fgets(record[count].cep, 8, stdin);
+        printf("Vacina: ");
+        fgets("%ld", &record[count].vacina);
 
         clear_buffer();
         
@@ -171,7 +236,7 @@ void accessClient(Client* record, int size){
         
         count++;
     
-        printf("\n\n\nCadastrar outro cliente? ");
+        printf("\n\n\nModificar o preco? ");
         
         keep = getchar();
         
